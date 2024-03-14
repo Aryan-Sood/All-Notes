@@ -1,6 +1,7 @@
 import 'package:all_notes/functions/Firebase%20Functions/check_user.dart';
 import 'package:all_notes/functions/Firebase%20Functions/create_email_account.dart';
 import 'package:all_notes/functions/Firebase%20Functions/email_login.dart';
+import 'package:all_notes/screens/homepage/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:all_notes/functions/Firebase%20Functions/google_sign_in.dart';
@@ -84,6 +85,8 @@ class _Loginpage extends State<LoginPage> {
                     onPressed: () async {
                       await signInWithEmail(
                           _emailController.text, _passwordController.text);
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) => HomePage()));
                     },
                     child: const Text('Login'),
                   ),
