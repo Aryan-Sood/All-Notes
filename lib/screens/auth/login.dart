@@ -1,13 +1,9 @@
-import 'package:all_notes/functions/Firebase%20Functions/check_user.dart';
-import 'package:all_notes/functions/Firebase%20Functions/create_email_account.dart';
 import 'package:all_notes/functions/Firebase%20Functions/email_login.dart';
-import 'package:all_notes/functions/changeLoginState.dart';
+import 'package:all_notes/functions/change_login_state.dart';
 import 'package:all_notes/screens/auth/register_page.dart';
 import 'package:all_notes/screens/homepage/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:all_notes/functions/Firebase%20Functions/google_sign_in.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
