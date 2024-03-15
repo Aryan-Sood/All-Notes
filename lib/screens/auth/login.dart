@@ -5,6 +5,7 @@ import 'package:all_notes/screens/homepage/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:all_notes/functions/Firebase%20Functions/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -16,6 +17,12 @@ class LoginPage extends StatefulWidget {
 class _Loginpage extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  void changeLoginState() async {
+    final SharedPreferences sharedPreferences =
+        await SharedPreferences.getInstance();
+    await sharedPreferences.setBool('loginState', true);
+  }
 
   @override
   void initState() {
@@ -85,6 +92,7 @@ class _Loginpage extends State<LoginPage> {
                     onPressed: () async {
                       await signInWithEmail(
                           _emailController.text, _passwordController.text);
+                      changeLoginState();
                       Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (context) => HomePage()));
                     },

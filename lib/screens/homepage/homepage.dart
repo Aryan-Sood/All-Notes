@@ -1,3 +1,4 @@
+import 'package:all_notes/widgets/homepage_note.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -53,6 +54,20 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
+      ),
+      body: Container(
+        padding: EdgeInsets.only(
+          left: 10,
+          right: 10,
+        ),
+        width: double.infinity,
+        height: double.infinity,
+        child: GridView.builder(
+            gridDelegate:
+                SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+            itemBuilder: (context, position) {
+              return NoteStructure(position, Colors.red);
+            }),
       ),
     );
   }
