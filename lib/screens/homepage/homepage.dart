@@ -1,5 +1,9 @@
+import 'package:all_notes/functions/changeLoginState.dart';
+import 'package:all_notes/screens/auth/login.dart';
 import 'package:all_notes/widgets/homepage_note.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -9,6 +13,30 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    printLoginData();
+  }
+
+  void printLoginData() async {
+    User? user = await FirebaseAuth.instance.currentUser;
+    print(user!.displayName);
+    print(user.email);
+    print(user.uid);
+  }
+
+  void logOutUser() async {
+    await FirebaseAuth.instance.signOut();
+    changeLoginState(false);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LoginPage(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,16 +69,10 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             ListTile(
-              title: Text("Option 1"),
-            ),
-            ListTile(
-              title: Text("Option 2"),
-            ),
-            ListTile(
-              title: Text("Option 3"),
-            ),
-            ListTile(
-              title: Text("Option 4"),
+              title: Text("Log Out"),
+              onTap: () {
+                logOutUser();
+              },
             ),
           ],
         ),

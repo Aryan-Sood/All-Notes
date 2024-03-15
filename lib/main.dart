@@ -19,11 +19,21 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  Future<bool> getLoginState() async {
+  bool loginStatus = false;
+
+  Future<void> getLoginState() async {
     final SharedPreferences sharedPreferences =
         await SharedPreferences.getInstance();
-    final bool loginState = sharedPreferences.getBool('loginState') ?? false;
-    return loginState;
+    setState(() {
+      loginStatus = sharedPreferences.getBool('loginState') ?? false;
+    });
+    print(loginStatus);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getLoginState();
   }
 
   @override
@@ -32,7 +42,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'All Notes',
       home: Scaffold(
-        body: HomePage(),
+        body: loginStatus ? HomePage() : LoginPage(),
       ),
     );
   }
