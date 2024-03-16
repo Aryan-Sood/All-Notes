@@ -1,26 +1,18 @@
-import 'package:all_notes/functions/Firebase%20Functions/email_login.dart';
-import 'package:all_notes/functions/change_login_state.dart';
-import 'package:all_notes/screens/auth/register_page.dart';
-import 'package:all_notes/screens/homepage/homepage.dart';
+import 'package:all_notes/functions/Firebase%20Functions/create_email_account.dart';
+import 'package:all_notes/screens/auth/login.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
-
+class RegisterPage extends StatefulWidget {
   @override
-  State<LoginPage> createState() => _Loginpage();
+  State<StatefulWidget> createState() => _RegisterPage();
 }
 
-class _Loginpage extends State<LoginPage> {
+class _RegisterPage extends State<RegisterPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool loginSuccess = false;
 
-  @override
-  void initState() {
-    super.initState();
-  }
+  bool accountCreationSuccess = false;
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +48,7 @@ class _Loginpage extends State<LoginPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const Text(
-                      'Log In',
+                      'Sign Up',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     ),
@@ -67,8 +59,7 @@ class _Loginpage extends State<LoginPage> {
                       keyboardType: TextInputType.emailAddress,
                       maxLines: 1,
                       controller: _emailController,
-                      decoration: InputDecoration(
-                          labelText: 'Email', border: OutlineInputBorder()),
+                      decoration: InputDecoration(labelText: 'Email'),
                     ),
                     const SizedBox(
                       height: 20,
@@ -77,27 +68,25 @@ class _Loginpage extends State<LoginPage> {
                       keyboardType: TextInputType.visiblePassword,
                       maxLines: 1,
                       controller: _passwordController,
-                      decoration: InputDecoration(
-                          labelText: 'Password', border: OutlineInputBorder()),
+                      decoration: InputDecoration(labelText: 'Password'),
                     ),
                     const SizedBox(
                       height: 30,
                     ),
                     ElevatedButton(
                       onPressed: () async {
-                        loginSuccess = await signInWithEmail(
+                        accountCreationSuccess = await createUserWithEmail(
                             _emailController.text, _passwordController.text);
-                        if (loginSuccess) {
-                          changeLoginState(true);
+                        if (accountCreationSuccess) {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => HomePage(),
+                              builder: (context) => LoginPage(),
                             ),
                           );
                         }
                       },
-                      child: const Text('Login'),
+                      child: const Text('Sign Up'),
                     ),
                   ],
                 ),
@@ -106,19 +95,6 @@ class _Loginpage extends State<LoginPage> {
             const SizedBox(
               height: 10,
             ),
-            TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RegisterPage(),
-                    ),
-                  );
-                },
-                child: Text(
-                  "Register here",
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                ))
           ],
         ),
       ),
