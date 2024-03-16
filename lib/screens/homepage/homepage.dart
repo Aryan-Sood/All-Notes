@@ -1,9 +1,10 @@
 import 'package:all_notes/Providers/notes_provider.dart';
 import 'package:all_notes/functions/change_login_state.dart';
 import 'package:all_notes/screens/auth/login.dart';
-import 'package:all_notes/models/homepage_note.dart';
+import 'package:all_notes/models/note.dart';
 import 'package:all_notes/widgets/add_note_sheet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,12 +16,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<NoteStructure> notes = [
-    NoteStructure(Colors.red, "Monday"),
-    NoteStructure(Colors.green, "Tuesday"),
-    NoteStructure(Colors.blue, "Wednesday"),
-    NoteStructure(Colors.orange, "Thursday"),
-  ];
+  late User user;
+  late DatabaseReference notesReference;
+
+  late List<NoteStructure> notes = [];
 
   List<Widget> _appBarActionsDefault = [
     IconButton(
@@ -33,17 +32,23 @@ class _HomePageState extends State<HomePage> {
     ),
   ];
 
-  List<Widget> _appBarActionsSecondary = [
-    IconButton(
-      onPressed: () {},
-      icon: Icon(Icons.delete),
-    ),
-  ];
-
   @override
   void initState() {
     super.initState();
-    printLoginData();
+    print("running init state");
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        updateNotesLocally();
+      });
+    });
+    print("init state finished");
+
+    // user = FirebaseAuth.instance.currentUser!;
+    // notesReference = FirebaseDatabase.instance
+    //     .ref()
+    //     .child('users')
+    //     .child(user.uid)
+    //     .child('notes');
   }
 
   void printLoginData() async {
@@ -66,9 +71,10 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> updateNotesLocally() async {
     List<NoteStructure> localNotes =
-        await Provider.of<NotesProvider>(context).notesList;
-    notes.clear();
-    notes = List.from(localNotes);
+        Provider.of<NotesProvider>(context, listen: false).notesList;
+    print("old size: ${notes.length}");
+    notes = [...localNotes];
+    print("new size ${notes.length}");
   }
 
   void addNewNote(NoteStructure newNote) {

@@ -1,5 +1,5 @@
 import 'package:all_notes/Providers/notes_provider.dart';
-import 'package:all_notes/models/homepage_note.dart';
+import 'package:all_notes/models/note.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -62,8 +62,7 @@ void AddNoteSheet(BuildContext context, Function(NoteStructure) updateData) {
                               NoteStructure(
                                   Colors.green, _titleController.text),
                             );
-                            Provider.of<NotesProvider>(context, listen: false)
-                                .addNote(_titleController.text);
+
                             Navigator.of(context).pop();
                           }
                         },
