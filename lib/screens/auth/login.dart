@@ -4,6 +4,14 @@ import 'package:all_notes/screens/auth/register_page.dart';
 import 'package:all_notes/screens/homepage/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+String pref1Name = 'loginPrefs';
+late SharedPreferences loginPrefs;
+
+Future<SharedPreferences> getSharedPreferences(String name) async {
+  return await SharedPreferences.getInstance();
+}
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -20,6 +28,7 @@ class _Loginpage extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+    getSharedPreferences(pref1Name).then((value) => loginPrefs = value);
   }
 
   @override

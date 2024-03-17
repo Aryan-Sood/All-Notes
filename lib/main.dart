@@ -5,9 +5,17 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
+String pref1Name = 'loginPrefs';
+late SharedPreferences loginPrefs;
+
+Future<SharedPreferences> getSharedPreferences(String name) async {
+  return await SharedPreferences.getInstance();
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  loginPrefs = await getSharedPreferences(pref1Name);
   runApp(const MyApp());
 }
 
@@ -22,10 +30,8 @@ class _MyAppState extends State<MyApp> {
   bool loginStatus = false;
 
   Future<void> getLoginState() async {
-    final SharedPreferences sharedPreferences =
-        await SharedPreferences.getInstance();
     setState(() {
-      loginStatus = sharedPreferences.getBool('loginState') ?? false;
+      loginStatus = loginPrefs.getBool('loginState') ?? false;
     });
     print(loginStatus);
   }
