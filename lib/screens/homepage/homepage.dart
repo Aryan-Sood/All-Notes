@@ -1,4 +1,4 @@
-import 'package:all_notes/functions/change_login_state.dart';
+import 'package:all_notes/functions/Others/change_login_state.dart';
 import 'package:all_notes/models/note_structure.dart';
 import 'package:all_notes/screens/auth/login.dart';
 import 'package:all_notes/widgets/add_note_sheet.dart';
@@ -69,7 +69,11 @@ class _HomePageState extends State<HomePage> {
 
   void addNewNote(NoteStructure newNote) {
     setState(() {
-      notes.add(NoteStructure(color: newNote.color, title: newNote.title));
+      notes.add(NoteStructure(
+          id: '1',
+          color: newNote.color,
+          title: newNote.title,
+          created: DateTime.now()));
     });
   }
 

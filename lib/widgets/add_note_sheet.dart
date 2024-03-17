@@ -1,3 +1,4 @@
+import 'package:all_notes/functions/Firebase%20Functions/push_new_note.dart';
 import 'package:all_notes/models/note_structure.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -82,9 +83,16 @@ void AddNoteSheet(BuildContext context, Function(NoteStructure) updateData) {
                             if (_titleController.text.isNotEmpty) {
                               updateData(
                                 NoteStructure(
+                                    id: '1',
                                     color: currentColor,
-                                    title: _titleController.text),
+                                    title: _titleController.text,
+                                    created: DateTime.now()),
                               );
+                              pushNewNote(NoteStructure(
+                                  id: 'not_834hfuhuu4t',
+                                  color: currentColor,
+                                  title: _titleController.text,
+                                  created: DateTime.now()));
                               Navigator.of(context).pop();
                             }
                           },

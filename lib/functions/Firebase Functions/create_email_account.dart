@@ -7,8 +7,11 @@ Future<bool> createUserWithEmail(String email, String password) async {
         .createUserWithEmailAndPassword(email: email, password: password);
     User? user = FirebaseAuth.instance.currentUser;
     String UID = user!.uid;
-    DatabaseReference databaseReference =
-        FirebaseDatabase.instance.ref().child('users').child(UID);
+    DatabaseReference databaseReference = FirebaseDatabase.instance
+        .ref()
+        .child('users')
+        .child(UID)
+        .child('Profile');
     databaseReference.set(
       {'email': user.email},
     );
