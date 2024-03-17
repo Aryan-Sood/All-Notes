@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
-class NoteStructure extends StatefulWidget {
-  late Color cardColor;
+class HomeNote extends StatefulWidget {
+  late Color color;
   late String title;
 
-  NoteStructure(Color color, String title) {
-    this.cardColor = color;
-    this.title = title;
-  }
+  HomeNote({required this.title, required this.color});
 
   @override
-  State<StatefulWidget> createState() => _NoteStructure();
+  State<StatefulWidget> createState() => _HomeNote();
 }
 
-class _NoteStructure extends State<NoteStructure> {
+class _HomeNote extends State<HomeNote> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: widget.cardColor,
+      color: widget.color,
       child: Container(
         alignment: Alignment.center,
         child: Text(

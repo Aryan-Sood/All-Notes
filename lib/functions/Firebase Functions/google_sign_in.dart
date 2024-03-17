@@ -10,7 +10,7 @@ Future<void> signInWithGoogle(BuildContext context) async {
     if (googleSignInAccount != null) {
       final GoogleSignInAuthentication googleAuth =
           await googleSignInAccount.authentication;
-      final AuthCredential authCredential = GoogleAuthProvider.credential(
+      GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );

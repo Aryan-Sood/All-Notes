@@ -12,8 +12,6 @@ Future<bool> createUserWithEmail(String email, String password) async {
     databaseReference.set(
       {'email': user.email},
     );
-    DatabaseReference datareference =
-        FirebaseDatabase.instance.ref().child('users').child(UID).child('data');
 
     return true;
   } catch (e) {

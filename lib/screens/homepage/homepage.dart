@@ -1,12 +1,11 @@
-import 'package:all_notes/Providers/notes_provider.dart';
 import 'package:all_notes/functions/change_login_state.dart';
+import 'package:all_notes/models/note_structure.dart';
 import 'package:all_notes/screens/auth/login.dart';
-import 'package:all_notes/models/note.dart';
 import 'package:all_notes/widgets/add_note_sheet.dart';
+import 'package:all_notes/widgets/home_note.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -42,13 +41,6 @@ class _HomePageState extends State<HomePage> {
       });
     });
     print("init state finished");
-
-    // user = FirebaseAuth.instance.currentUser!;
-    // notesReference = FirebaseDatabase.instance
-    //     .ref()
-    //     .child('users')
-    //     .child(user.uid)
-    //     .child('notes');
   }
 
   void printLoginData() async {
@@ -56,6 +48,10 @@ class _HomePageState extends State<HomePage> {
     print(user!.displayName);
     print(user.email);
     print(user.uid);
+  }
+
+  String colorToString(Color color) {
+    return '#${color.value.toRadixString(16).substring(2)}';
   }
 
   void logOutUser() async {
@@ -69,17 +65,11 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<void> updateNotesLocally() async {
-    List<NoteStructure> localNotes =
-        Provider.of<NotesProvider>(context, listen: false).notesList;
-    print("old size: ${notes.length}");
-    notes = [...localNotes];
-    print("new size ${notes.length}");
-  }
+  Future<void> updateNotesLocally() async {}
 
   void addNewNote(NoteStructure newNote) {
     setState(() {
-      notes.add(NoteStructure(Colors.green, newNote.title));
+      notes.add(NoteStructure(color: newNote.color, title: newNote.title));
     });
   }
 
@@ -139,8 +129,11 @@ class _HomePageState extends State<HomePage> {
                     crossAxisCount: 2),
                 itemBuilder: (context, index) {
                   return GridTile(
-                      child: NoteStructure(
-                          notes[index].cardColor, notes[index].title));
+                    child: HomeNote(
+                      title: notes[index].title,
+                      color: notes[index].color,
+                    ),
+                  );
                 },
                 itemCount: notes.length,
               ),
