@@ -1,7 +1,5 @@
-import 'package:all_notes/Providers/notes_provider.dart';
 import 'package:all_notes/models/note.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 void AddNoteSheet(BuildContext context, Function(NoteStructure) updateData) {
   final TextEditingController _titleController = TextEditingController();
