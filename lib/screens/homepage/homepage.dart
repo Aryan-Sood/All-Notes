@@ -8,7 +8,9 @@ import 'package:all_notes/widgets/add_note_sheet.dart';
 import 'package:all_notes/widgets/home_note.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -89,7 +91,7 @@ class _HomePageState extends State<HomePage> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => LoginPage(),
+        builder: (context) => const LoginPage(),
       ),
     );
   }
@@ -138,74 +140,56 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     if (loading) {
-      return Scaffold(
+      return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
         ),
       );
     } else {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text("Notes"),
-          backgroundColor: Colors.white,
-          actions: _appBarActionsDefault,
-        ),
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              DrawerHeader(
-                decoration: BoxDecoration(color: Colors.blue),
-                child: Text(
-                  "Options",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
+      if (notes.isEmpty) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text("Notes"),
+            backgroundColor: Colors.white,
+            actions: _appBarActionsDefault,
+          ),
+          drawer: Drawer(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                const DrawerHeader(
+                  decoration: BoxDecoration(color: Colors.blue),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Settings",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              ListTile(
-                title: Text("Log Out"),
-                onTap: () {
-                  logOutUser();
-                },
-              ),
-            ],
-          ),
-        ),
-        body: Stack(
-          children: [
-            Container(
-              padding: EdgeInsets.only(
-                left: 10,
-                right: 10,
-              ),
-              width: double.infinity,
-              height: double.infinity,
-              child: GestureDetector(
-                onLongPress: () {
-                  setState(() {
-                    _appBarActionsDefault = [
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.delete),
-                      ),
-                    ];
-                  });
-                },
-                child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2),
-                  itemBuilder: (context, index) {
-                    return GridTile(
-                      child: HomeNote(
-                        title: notes[index].title,
-                        color: notes[index].color,
-                      ),
-                    );
+                ListTile(
+                  title: const Text("Log Out"),
+                  onTap: () {
+                    logOutUser();
                   },
-                  itemCount: notes.length,
                 ),
+              ],
+            ),
+          ),
+          body: Stack(children: [
+            const Positioned.fill(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "Seems empty!",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                  ),
+                ],
               ),
             ),
             Positioned(
@@ -213,15 +197,15 @@ class _HomePageState extends State<HomePage> {
                 right: 16,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.all(15),
-                      shape: CircleBorder(),
+                      padding: const EdgeInsets.all(15),
+                      shape: const CircleBorder(),
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.black,
                       shadowColor: Colors.blue),
                   onPressed: () {
                     addNoteSheet(context, addNewNote);
                   },
-                  child: Text(
+                  child: const Text(
                     "+",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -229,9 +213,99 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ))
-          ],
-        ),
-      );
+          ]),
+        );
+      } else {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text("Notes"),
+            backgroundColor: Colors.white,
+            actions: _appBarActionsDefault,
+          ),
+          drawer: Drawer(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                const DrawerHeader(
+                  decoration: BoxDecoration(color: Colors.blue),
+                  child: Text(
+                    "Options",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+                ListTile(
+                  title: const Text("Log Out"),
+                  onTap: () {
+                    logOutUser();
+                  },
+                ),
+              ],
+            ),
+          ),
+          body: Stack(
+            children: [
+              Container(
+                padding: const EdgeInsets.only(
+                  left: 10,
+                  right: 10,
+                ),
+                width: double.infinity,
+                height: double.infinity,
+                child: GestureDetector(
+                  onLongPress: () {
+                    setState(() {
+                      _appBarActionsDefault = [
+                        IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.delete),
+                        ),
+                      ];
+                    });
+                  },
+                  child: GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2),
+                    itemBuilder: (context, index) {
+                      return GridTile(
+                        child: HomeNote(
+                          title: notes[index].title,
+                          color: notes[index].color,
+                        ),
+                      );
+                    },
+                    itemCount: notes.length,
+                  ),
+                ),
+              ),
+              Positioned(
+                  bottom: 16,
+                  right: 16,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.all(15),
+                        shape: const CircleBorder(),
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.black,
+                        shadowColor: Colors.blue),
+                    onPressed: () {
+                      addNoteSheet(context, addNewNote);
+                    },
+                    child: const Text(
+                      "+",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ))
+            ],
+          ),
+        );
+      }
     }
   }
 }
