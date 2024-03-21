@@ -17,20 +17,20 @@ void setColor(Color color) {
 //   return colorFromHex(color) ?? Colors.green;
 // }
 
-void AddNoteSheet(BuildContext context, Function(NoteStructure) updateData) {
-  final TextEditingController _titleController = TextEditingController();
+void addNoteSheet(BuildContext context, Function(NoteStructure) updateData) {
+  final TextEditingController titleController = TextEditingController();
   showModalBottomSheet(
-      isScrollControlled: true,
+      isScrollControlled: false,
       context: context,
       builder: (BuildContext context) {
         return SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
               left: 20,
               right: 20,
             ),
             child: Padding(
-              padding: EdgeInsets.only(
+              padding: const EdgeInsets.only(
                 top: 40,
               ),
               child: Container(
@@ -39,7 +39,7 @@ void AddNoteSheet(BuildContext context, Function(NoteStructure) updateData) {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
+                    const Text(
                       "New Note",
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
@@ -48,8 +48,8 @@ void AddNoteSheet(BuildContext context, Function(NoteStructure) updateData) {
                       keyboardType: TextInputType.emailAddress,
                       textAlign: TextAlign.center,
                       textAlignVertical: TextAlignVertical.center,
-                      controller: _titleController,
-                      decoration: InputDecoration(
+                      controller: titleController,
+                      decoration: const InputDecoration(
                           labelText: "Title", alignLabelWithHint: true),
                     ),
                     const SizedBox(
@@ -70,7 +70,7 @@ void AddNoteSheet(BuildContext context, Function(NoteStructure) updateData) {
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text(
+                          child: const Text(
                             'Cancel',
                             style: TextStyle(
                               fontSize: 16,
@@ -80,23 +80,23 @@ void AddNoteSheet(BuildContext context, Function(NoteStructure) updateData) {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            if (_titleController.text.isNotEmpty) {
+                            if (titleController.text.isNotEmpty) {
                               updateData(
                                 NoteStructure(
                                     id: '1',
                                     color: currentColor,
-                                    title: _titleController.text,
+                                    title: titleController.text,
                                     created: DateTime.now()),
                               );
                               pushNewNote(NoteStructure(
                                   id: 'not_834hfuhuu4t',
                                   color: currentColor,
-                                  title: _titleController.text,
+                                  title: titleController.text,
                                   created: DateTime.now()));
                               Navigator.of(context).pop();
                             }
                           },
-                          child: Text(
+                          child: const Text(
                             'Done',
                             style: TextStyle(
                               fontSize: 16,

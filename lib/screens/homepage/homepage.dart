@@ -17,6 +17,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late User user;
   late DatabaseReference notesReference;
+  bool loading = true;
 
   late List<NoteStructure> notes = [];
 
@@ -35,11 +36,18 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     print("running init state");
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        updateNotesLocally();
-      });
-    });
+    updateNotesLocallyFromServer().then(
+      (_) => setState(
+        () {
+          loading = false;
+        },
+      ),
+    );
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   setState(() {
+    //     updateNotesLocally();
+    //   });
+    // });
     print("init state finished");
   }
 
@@ -65,7 +73,24 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<void> updateNotesLocally() async {}
+  Future<void> updateNotesLocallyFromServer() async {
+    User user = FirebaseAuth.instance.currentUser!;
+    String UID = user.uid;
+    // DatabaseReference notesRef = FirebaseDatabase.instance
+    //     .ref()
+    //     .child('users')
+    //     .child(UID)
+    //     .child('Notes');
+    // print('Key is: ${notesRef.key}');
+    // print('get reference: ${notesRef.root.get().toString()}');
+    // DatabaseEvent event = await notesRef.once();
+    // print('event: ${event.snapshot.children}');
+
+    DatabaseReference reference = FirebaseDatabase.instance.ref();
+    DatabaseEvent event = await reference.child('users').once();
+    DataSnapshot snapshot = event.snapshot;
+    // Map<dynamic, dynamic> usersData = Map.fromIterable(snapshot.value);
+  }
 
   void addNewNote(NoteStructure newNote) {
     setState(() {
@@ -79,93 +104,101 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Notes"),
-        backgroundColor: Colors.white,
-        actions: _appBarActionsDefault,
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(color: Colors.blue),
-              child: Text(
-                "Options",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                ),
-              ),
-            ),
-            ListTile(
-              title: Text("Log Out"),
-              onTap: () {
-                logOutUser();
-              },
-            ),
-          ],
+    if (loading) {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
         ),
-      ),
-      body: Stack(
-        children: [
-          Container(
-            padding: EdgeInsets.only(
-              left: 10,
-              right: 10,
-            ),
-            width: double.infinity,
-            height: double.infinity,
-            child: GestureDetector(
-              onLongPress: () {
-                setState(() {
-                  _appBarActionsDefault = [
-                    IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.delete),
-                    ),
-                  ];
-                });
-              },
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2),
-                itemBuilder: (context, index) {
-                  return GridTile(
-                    child: HomeNote(
-                      title: notes[index].title,
-                      color: notes[index].color,
-                    ),
-                  );
-                },
-                itemCount: notes.length,
-              ),
-            ),
-          ),
-          Positioned(
-              bottom: 16,
-              right: 16,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.all(15),
-                    shape: CircleBorder(),
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black,
-                    shadowColor: Colors.blue),
-                onPressed: () {
-                  AddNoteSheet(context, addNewNote);
-                },
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text("Notes"),
+          backgroundColor: Colors.white,
+          actions: _appBarActionsDefault,
+        ),
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader(
+                decoration: BoxDecoration(color: Colors.blue),
                 child: Text(
-                  "+",
+                  "Options",
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
+                    color: Colors.white,
+                    fontSize: 18,
                   ),
                 ),
-              ))
-        ],
-      ),
-    );
+              ),
+              ListTile(
+                title: Text("Log Out"),
+                onTap: () {
+                  logOutUser();
+                },
+              ),
+            ],
+          ),
+        ),
+        body: Stack(
+          children: [
+            Container(
+              padding: EdgeInsets.only(
+                left: 10,
+                right: 10,
+              ),
+              width: double.infinity,
+              height: double.infinity,
+              child: GestureDetector(
+                onLongPress: () {
+                  setState(() {
+                    _appBarActionsDefault = [
+                      IconButton(
+                        onPressed: () {},
+                        icon: Icon(Icons.delete),
+                      ),
+                    ];
+                  });
+                },
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2),
+                  itemBuilder: (context, index) {
+                    return GridTile(
+                      child: HomeNote(
+                        title: notes[index].title,
+                        color: notes[index].color,
+                      ),
+                    );
+                  },
+                  itemCount: notes.length,
+                ),
+              ),
+            ),
+            Positioned(
+                bottom: 16,
+                right: 16,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.all(15),
+                      shape: CircleBorder(),
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
+                      shadowColor: Colors.blue),
+                  onPressed: () {
+                    addNoteSheet(context, addNewNote);
+                  },
+                  child: Text(
+                    "+",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                ))
+          ],
+        ),
+      );
+    }
   }
 }
