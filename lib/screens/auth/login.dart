@@ -58,7 +58,7 @@ class _Loginpage extends State<LoginPage> {
               margin: const EdgeInsets.only(left: 20, right: 20),
               child: Padding(
                 padding:
-                    EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 20),
+                    const EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 20),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -76,7 +76,7 @@ class _Loginpage extends State<LoginPage> {
                       keyboardType: TextInputType.emailAddress,
                       maxLines: 1,
                       controller: _emailController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                           labelText: 'Email', border: OutlineInputBorder()),
                     ),
                     const SizedBox(
@@ -86,7 +86,7 @@ class _Loginpage extends State<LoginPage> {
                       keyboardType: TextInputType.visiblePassword,
                       maxLines: 1,
                       controller: _passwordController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                           labelText: 'Password', border: OutlineInputBorder()),
                     ),
                     const SizedBox(
@@ -124,7 +124,7 @@ class _Loginpage extends State<LoginPage> {
                     ),
                   );
                 },
-                child: Text(
+                child: const Text(
                   "Register here",
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                 ))

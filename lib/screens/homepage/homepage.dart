@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:all_notes/Utils/serial_deserial_notes.dart';
 import 'package:all_notes/functions/Others/change_login_state.dart';
 import 'package:all_notes/models/note_structure.dart';
 import 'package:all_notes/screens/auth/login.dart';
@@ -6,6 +9,7 @@ import 'package:all_notes/widgets/home_note.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -18,17 +22,20 @@ class _HomePageState extends State<HomePage> {
   late User user;
   late DatabaseReference notesReference;
   bool loading = true;
+  List<NoteStructure> allLocalNotes = [];
+
+  late SharedPreferences notesPrefs;
 
   late List<NoteStructure> notes = [];
 
   List<Widget> _appBarActionsDefault = [
     IconButton(
       onPressed: () {},
-      icon: Icon(Icons.search),
+      icon: const Icon(Icons.search),
     ),
     IconButton(
       onPressed: () {},
-      icon: Icon(Icons.star),
+      icon: const Icon(Icons.star),
     ),
   ];
 
@@ -36,19 +43,36 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     print("running init state");
-    updateNotesLocallyFromServer().then(
-      (_) => setState(
-        () {
-          loading = false;
-        },
-      ),
-    );
+    retrieveLocalNotes().then((value) {
+      print("initial value: ${value.length}");
+      allLocalNotes = List.from(value);
+      setState(() {
+        notes = List.from(allLocalNotes);
+        print("set state: ${notes.length}");
+        notes.forEach((element) {
+          print(element.title);
+        });
+        loading = false;
+      });
+    });
+
+    // updateNotesLocallyFromServer().then(
+    //   (_) => setState(
+    //     () {
+    //       loading = false;
+    //     },
+    //   ),
+    // );
     // WidgetsBinding.instance.addPostFrameCallback((_) {
     //   setState(() {
     //     updateNotesLocally();
     //   });
     // });
     print("init state finished");
+  }
+
+  Future<SharedPreferences> getSharedPreferences(String name) async {
+    return await SharedPreferences.getInstance();
   }
 
   void printLoginData() async {
@@ -73,6 +97,12 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Future<List<NoteStructure>> retrieveLocalNotes() async {
+    notesPrefs = await getSharedPreferences(notesPrefName);
+    List<String> noteJson = notesPrefs.getStringList('notes') ?? [];
+    return noteJson.map((json) => deserializeNoteData(jsonDecode(json))).toList();;
+  }
+
   Future<void> updateNotesLocallyFromServer() async {
     User user = FirebaseAuth.instance.currentUser!;
     String UID = user.uid;
@@ -95,10 +125,7 @@ class _HomePageState extends State<HomePage> {
   void addNewNote(NoteStructure newNote) {
     setState(() {
       notes.add(NoteStructure(
-          id: '1',
-          color: newNote.color,
-          title: newNote.title,
-          created: DateTime.now()));
+          color: newNote.color, title: newNote.title, created: DateTime.now()));
     });
   }
 
