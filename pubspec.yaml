@@ -38,6 +38,7 @@ dependencies:
   firebase_database:
   provider:
   flutter_colorpicker:
+  uuid:
 
 
   # The following adds the Cupertino Icons font to your application.

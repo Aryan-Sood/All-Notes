@@ -12,7 +12,7 @@ void pushNewNote(NoteStructure newNote) async {
         .child('users')
         .child(UID)
         .child('Notes')
-        .push();
+        .child(newNote.id);
     await notesRef.set({
       'id': notesRef.key,
       'color': colorToHex(newNote.color),

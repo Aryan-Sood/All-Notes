@@ -42,19 +42,17 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    print("running init state");
-    retrieveLocalNotes().then((value) {
-      print("initial value: ${value.length}");
-      allLocalNotes = List.from(value);
-      setState(() {
-        notes = List.from(allLocalNotes);
-        print("set state: ${notes.length}");
-        notes.forEach((element) {
-          print(element.title);
-        });
-        loading = false;
-      });
-    });
+    retrieveLocalNotes().then(
+      (value) {
+        allLocalNotes = List.from(value);
+        setState(
+          () {
+            notes = List.from(allLocalNotes);
+            loading = false;
+          },
+        );
+      },
+    );
 
     // updateNotesLocallyFromServer().then(
     //   (_) => setState(
@@ -68,7 +66,6 @@ class _HomePageState extends State<HomePage> {
     //     updateNotesLocally();
     //   });
     // });
-    print("init state finished");
   }
 
   Future<SharedPreferences> getSharedPreferences(String name) async {
@@ -100,7 +97,10 @@ class _HomePageState extends State<HomePage> {
   Future<List<NoteStructure>> retrieveLocalNotes() async {
     notesPrefs = await getSharedPreferences(notesPrefName);
     List<String> noteJson = notesPrefs.getStringList('notes') ?? [];
-    return noteJson.map((json) => deserializeNoteData(jsonDecode(json))).toList();;
+    return noteJson
+        .map((json) => deserializeNoteData(jsonDecode(json)))
+        .toList();
+    ;
   }
 
   Future<void> updateNotesLocallyFromServer() async {
@@ -124,8 +124,14 @@ class _HomePageState extends State<HomePage> {
 
   void addNewNote(NoteStructure newNote) {
     setState(() {
-      notes.add(NoteStructure(
-          color: newNote.color, title: newNote.title, created: DateTime.now()));
+      notes.add(
+        NoteStructure(
+          id: newNote.id,
+          color: newNote.color,
+          title: newNote.title,
+          created: DateTime.now(),
+        ),
+      );
     });
   }
 
