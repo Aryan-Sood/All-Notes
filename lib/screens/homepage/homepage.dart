@@ -50,24 +50,15 @@ class _HomePageState extends State<HomePage> {
         setState(
           () {
             notes = List.from(allLocalNotes);
-            loading = false;
           },
         );
       },
     );
-
-    // updateNotesLocallyFromServer().then(
-    //   (_) => setState(
-    //     () {
-    //       loading = false;
-    //     },
-    //   ),
-    // );
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   setState(() {
-    //     updateNotesLocally();
-    //   });
-    // });
+    updateNotesLocallyFromServer().then((value) {
+      setState(() {
+        loading = false;
+      });
+    });
   }
 
   Future<SharedPreferences> getSharedPreferences(String name) async {
@@ -83,6 +74,17 @@ class _HomePageState extends State<HomePage> {
 
   String colorToString(Color color) {
     return '#${color.value.toRadixString(16).substring(2)}';
+  }
+
+  Color stringToColor(String colorString) {
+    if (colorString.startsWith('#')) {
+      colorString = colorString.substring(1);
+    }
+    if (colorString.length == 6) {
+      colorString = 'FF' + colorString;
+    }
+    int colorHex = int.parse(colorString, radix: 16);
+    return Color(colorHex);
   }
 
   void logOutUser() async {
@@ -102,26 +104,58 @@ class _HomePageState extends State<HomePage> {
     return noteJson
         .map((json) => deserializeNoteData(jsonDecode(json)))
         .toList();
-    ;
   }
 
   Future<void> updateNotesLocallyFromServer() async {
     User user = FirebaseAuth.instance.currentUser!;
     String UID = user.uid;
-    // DatabaseReference notesRef = FirebaseDatabase.instance
-    //     .ref()
-    //     .child('users')
-    //     .child(UID)
-    //     .child('Notes');
-    // print('Key is: ${notesRef.key}');
-    // print('get reference: ${notesRef.root.get().toString()}');
-    // DatabaseEvent event = await notesRef.once();
-    // print('event: ${event.snapshot.children}');
-
-    DatabaseReference reference = FirebaseDatabase.instance.ref();
-    DatabaseEvent event = await reference.child('users').once();
-    DataSnapshot snapshot = event.snapshot;
-    // Map<dynamic, dynamic> usersData = Map.fromIterable(snapshot.value);
+    notesPrefs = await getSharedPreferences(notesPrefName);
+    List<String> fetchedNotes = notesPrefs.getStringList(notesPrefName) ?? [];
+    List<NoteStructure> serverNotes = [];
+    DatabaseReference notesRef = FirebaseDatabase.instance
+        .ref()
+        .child('users')
+        .child(UID)
+        .child('Notes');
+    notesRef.once().then(
+      (DatabaseEvent event) {
+        Map<dynamic, dynamic>? notesMap =
+            event.snapshot.value as Map<dynamic, dynamic>;
+        if (notesMap != null) {
+          notesMap.forEach(
+            (key, value) {
+              serverNotes.add(
+                NoteStructure(
+                  id: value['id'],
+                  color: stringToColor(value['color']),
+                  title: value['title'],
+                  created: DateTime.parse(
+                    value['created'],
+                  ),
+                ),
+              );
+              fetchedNotes.add(
+                json.encode(
+                  serializeNoteData(
+                    value['id'],
+                    stringToColor(value['color']),
+                    value['title'],
+                    DateTime.parse(
+                      value['created'],
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
+          setState(() {
+            notes = List.from(serverNotes);
+          });
+          //
+        }
+      },
+    );
+    await notesPrefs.setStringList('notes', fetchedNotes);
   }
 
   void addNewNote(NoteStructure newNote) {
