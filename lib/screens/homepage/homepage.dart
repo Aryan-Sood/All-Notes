@@ -105,7 +105,7 @@ class _HomePageState extends State<HomePage> {
     User user = FirebaseAuth.instance.currentUser!;
     String UID = user.uid;
     notesPrefs = await getSharedPreferences(notesPrefName);
-    List<String> fetchedNotes = notesPrefs.getStringList(notesPrefName) ?? [];
+    List<String> fetchedNotes = [];
     List<NoteStructure> serverNotes = [];
     DatabaseReference notesRef = FirebaseDatabase.instance
         .ref()
@@ -116,7 +116,7 @@ class _HomePageState extends State<HomePage> {
       (DatabaseEvent event) {
         Map<dynamic, dynamic>? notesMap =
             event.snapshot.value as Map<dynamic, dynamic>;
-        if (notesMap != null) {
+        if (notesMap.isNotEmpty) {
           notesMap.forEach(
             (key, value) {
               serverNotes.add(
