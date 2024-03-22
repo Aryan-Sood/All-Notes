@@ -7,8 +7,5 @@ class NoteStructure {
   late DateTime created;
 
   NoteStructure(
-      {required this.id,
-      required this.color,
-      required this.title,
-      required this.created});
+      {required this.id, required this.color, required this.title, required this.created});
 }
