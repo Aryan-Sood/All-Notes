@@ -1,5 +1,5 @@
 import 'package:all_notes/functions/Firebase%20Functions/email_login.dart';
-import 'package:all_notes/functions/Others/change_login_state.dart';
+import 'package:all_notes/Utils/change_login_state.dart';
 import 'package:all_notes/screens/auth/register_page.dart';
 import 'package:all_notes/screens/homepage/homepage.dart';
 import 'package:flutter/material.dart';

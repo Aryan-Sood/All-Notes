@@ -1,16 +1,14 @@
 import 'dart:convert';
 
 import 'package:all_notes/Utils/serial_deserial_notes.dart';
-import 'package:all_notes/functions/Others/change_login_state.dart';
+import 'package:all_notes/Utils/change_login_state.dart';
 import 'package:all_notes/models/note_structure.dart';
 import 'package:all_notes/screens/auth/login.dart';
 import 'package:all_notes/widgets/add_note_sheet.dart';
 import 'package:all_notes/widgets/home_note.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -24,7 +22,6 @@ class _HomePageState extends State<HomePage> {
   late User user;
   late DatabaseReference notesReference;
   bool loading = true;
-  List<NoteStructure> allLocalNotes = [];
 
   late SharedPreferences notesPrefs;
 
@@ -44,21 +41,19 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    retrieveLocalNotes().then(
+
+    updateLocalNotesFromServer().then((value) {}).then(
       (value) {
-        allLocalNotes = List.from(value);
-        setState(
-          () {
-            notes = List.from(allLocalNotes);
+        retrieveLocalNotes().then(
+          (value) {
+            setState(() {
+              notes = List.from(value);
+              loading = false;
+            });
           },
         );
       },
     );
-    updateNotesLocallyFromServer().then((value) {
-      setState(() {
-        loading = false;
-      });
-    });
   }
 
   Future<SharedPreferences> getSharedPreferences(String name) async {
@@ -106,7 +101,7 @@ class _HomePageState extends State<HomePage> {
         .toList();
   }
 
-  Future<void> updateNotesLocallyFromServer() async {
+  Future<void> updateLocalNotesFromServer() async {
     User user = FirebaseAuth.instance.currentUser!;
     String UID = user.uid;
     notesPrefs = await getSharedPreferences(notesPrefName);
@@ -117,7 +112,7 @@ class _HomePageState extends State<HomePage> {
         .child('users')
         .child(UID)
         .child('Notes');
-    notesRef.once().then(
+    await notesRef.once().then(
       (DatabaseEvent event) {
         Map<dynamic, dynamic>? notesMap =
             event.snapshot.value as Map<dynamic, dynamic>;
@@ -148,13 +143,14 @@ class _HomePageState extends State<HomePage> {
               );
             },
           );
-          setState(() {
-            notes = List.from(serverNotes);
-          });
+          // setState(() {
+          //   notes = List.from(serverNotes);
+          // });
           //
         }
       },
     );
+    print("length of fetched notes: ${fetchedNotes}");
     await notesPrefs.setStringList('notes', fetchedNotes);
   }
 
@@ -174,9 +170,58 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     if (loading) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Notes'),
+          backgroundColor: Colors.white,
+          actions: _appBarActionsDefault,
+        ),
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              const DrawerHeader(
+                decoration: BoxDecoration(color: Colors.blue),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Settings",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ),
+              ListTile(
+                title: const Text("Log Out"),
+                onTap: () {
+                  logOutUser();
+                },
+              ),
+            ],
+          ),
+        ),
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          child: const Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                'Loading your notes',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              CircularProgressIndicator(),
+            ],
+          ),
         ),
       );
     } else {
