@@ -35,7 +35,7 @@ class _Loginpage extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(color: Colors.blue),
+        decoration: const BoxDecoration(color: Colors.white),
         width: double.infinity,
         height: double.infinity,
         child: Column(
@@ -57,8 +57,8 @@ class _Loginpage extends State<LoginPage> {
                   color: Colors.white.withOpacity(0.4)),
               margin: const EdgeInsets.only(left: 20, right: 20),
               child: Padding(
-                padding:
-                    const EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 20),
+                padding: const EdgeInsets.only(
+                    left: 10, right: 10, top: 20, bottom: 20),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -130,6 +130,24 @@ class _Loginpage extends State<LoginPage> {
                 ))
           ],
         ),
+      ),
+    );
+  }
+}
+
+class LoginContainer extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _LoginContainer();
+}
+
+class _LoginContainer extends State<LoginContainer> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [Text('Welcome Back!', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),)],
       ),
     );
   }

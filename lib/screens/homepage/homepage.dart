@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
     ),
     IconButton(
       onPressed: () {},
-      icon: const Icon(Icons.star),
+      icon: const Icon(Icons.star_border),
     ),
   ];
 
@@ -105,51 +105,54 @@ class _HomePageState extends State<HomePage> {
     User user = FirebaseAuth.instance.currentUser!;
     String UID = user.uid;
     notesPrefs = await getSharedPreferences(notesPrefName);
-    List<String> fetchedNotes = [];
+    List<String> fetchedNotes = notesPrefs.getStringList(notesPrefName) ?? [];
     List<NoteStructure> serverNotes = [];
-    DatabaseReference notesRef = FirebaseDatabase.instance
-        .ref()
-        .child('users')
-        .child(UID)
-        .child('Notes');
-    await notesRef.once().then(
-      (DatabaseEvent event) {
-        Map<dynamic, dynamic>? notesMap =
-            event.snapshot.value as Map<dynamic, dynamic>;
-        if (notesMap.isNotEmpty) {
-          notesMap.forEach(
-            (key, value) {
-              serverNotes.add(
-                NoteStructure(
-                  id: value['id'],
-                  color: stringToColor(value['color']),
-                  title: value['title'],
-                  created: DateTime.parse(
-                    value['created'],
-                  ),
-                ),
-              );
-              fetchedNotes.add(
-                json.encode(
-                  serializeNoteData(
-                    value['id'],
-                    stringToColor(value['color']),
-                    value['title'],
-                    DateTime.parse(
+
+    try {
+      fetchedNotes.clear();
+      DatabaseReference notesRef = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(UID)
+          .child('Notes');
+
+      await notesRef.once().then(
+        (DatabaseEvent event) {
+          Map<dynamic, dynamic>? notesMap =
+              event.snapshot.value as Map<dynamic, dynamic>;
+          if (notesMap.isNotEmpty) {
+            notesMap.forEach(
+              (key, value) {
+                serverNotes.add(
+                  NoteStructure(
+                    id: value['id'],
+                    color: stringToColor(value['color']),
+                    title: value['title'],
+                    created: DateTime.parse(
                       value['created'],
                     ),
                   ),
-                ),
-              );
-            },
-          );
-          // setState(() {
-          //   notes = List.from(serverNotes);
-          // });
-          //
-        }
-      },
-    );
+                );
+                fetchedNotes.add(
+                  json.encode(
+                    serializeNoteData(
+                      value['id'],
+                      stringToColor(value['color']),
+                      value['title'],
+                      DateTime.parse(
+                        value['created'],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          }
+        },
+      );
+    } catch (e) {
+      print(e.toString());
+    }
     print("length of fetched notes: ${fetchedNotes}");
     await notesPrefs.setStringList('notes', fetchedNotes);
   }
