@@ -1,7 +1,4 @@
-import 'package:all_notes/functions/Firebase%20Functions/email_login.dart';
-import 'package:all_notes/Utils/change_login_state.dart';
-import 'package:all_notes/screens/auth/register_page.dart';
-import 'package:all_notes/screens/homepage/homepage.dart';
+import 'package:all_notes/widgets/credentials_field.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,8 +18,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _Loginpage extends State<LoginPage> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   bool loginSuccess = false;
 
   @override
@@ -51,83 +48,7 @@ class _Loginpage extends State<LoginPage> {
             const SizedBox(
               height: 40,
             ),
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white.withOpacity(0.4)),
-              margin: const EdgeInsets.only(left: 20, right: 20),
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    left: 10, right: 10, top: 20, bottom: 20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text(
-                      'Log In',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    TextField(
-                      keyboardType: TextInputType.emailAddress,
-                      maxLines: 1,
-                      controller: _emailController,
-                      decoration: const InputDecoration(
-                          labelText: 'Email', border: OutlineInputBorder()),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    TextField(
-                      keyboardType: TextInputType.visiblePassword,
-                      maxLines: 1,
-                      controller: _passwordController,
-                      decoration: const InputDecoration(
-                          labelText: 'Password', border: OutlineInputBorder()),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        loginSuccess = await signInWithEmail(
-                            _emailController.text, _passwordController.text);
-                        if (loginSuccess) {
-                          changeLoginState(true);
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => HomePage(),
-                            ),
-                          );
-                        }
-                      },
-                      child: const Text('Login'),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RegisterPage(),
-                    ),
-                  );
-                },
-                child: const Text(
-                  "Register here",
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                ))
+            LoginContainer(),
           ],
         ),
       ),
@@ -143,12 +64,105 @@ class LoginContainer extends StatefulWidget {
 class _LoginContainer extends State<LoginContainer> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [Text('Welcome Back!', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),)],
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+          decoration: BoxDecoration(
+            color: Color.fromRGBO(247, 241, 241, 100),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Padding(
+            padding:
+                const EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  'Welcome Back!',
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
+                ),
+                const SizedBox(
+                  height: 2,
+                ),
+                Text(
+                  'Login to your existing account',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black.withOpacity(0.5),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                const CredentialsField(
+                  controller: emailController,
+                  hint: 'Email',
+                  icon: Icon(Icons.email_rounded),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                const CredentialsField(
+                  controller: passwordController,
+                  hint: 'Password',
+                  icon: Icon(Icons.lock),
+                ),
+                const SizedBox(
+                  height: 3,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        onPressed: () {},
+                        child: const Text(
+                          'LOGIN',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 3,
+        ),
+        const Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Create account here',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
