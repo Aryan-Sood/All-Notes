@@ -1,3 +1,4 @@
+import 'package:all_notes/screens/auth/register_page.dart';
 import 'package:all_notes/widgets/credentials_field.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -18,8 +19,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _Loginpage extends State<LoginPage> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
   bool loginSuccess = false;
 
   @override
@@ -32,7 +31,12 @@ class _Loginpage extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(color: Colors.white),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+              colors: [Colors.green, Colors.blue],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight),
+        ),
         width: double.infinity,
         height: double.infinity,
         child: Column(
@@ -48,7 +52,7 @@ class _Loginpage extends State<LoginPage> {
             const SizedBox(
               height: 40,
             ),
-            LoginContainer(),
+            const LoginContainer(),
           ],
         ),
       ),
@@ -57,21 +61,26 @@ class _Loginpage extends State<LoginPage> {
 }
 
 class LoginContainer extends StatefulWidget {
+  const LoginContainer({super.key});
+
   @override
   State<StatefulWidget> createState() => _LoginContainer();
 }
 
 class _LoginContainer extends State<LoginContainer> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Container(
-          margin: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
           decoration: BoxDecoration(
-            color: Color.fromRGBO(247, 241, 241, 100),
             borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.white, width: 1),
+            color: Colors.transparent.withOpacity(0.1),
           ),
           child: Padding(
             padding:
@@ -101,18 +110,18 @@ class _LoginContainer extends State<LoginContainer> {
                 const SizedBox(
                   height: 20,
                 ),
-                const CredentialsField(
+                CredentialsField(
                   controller: emailController,
                   hint: 'Email',
-                  icon: Icon(Icons.email_rounded),
+                  icon: const Icon(Icons.email_rounded),
                 ),
                 const SizedBox(
                   height: 20,
                 ),
-                const CredentialsField(
+                CredentialsField(
                   controller: passwordController,
                   hint: 'Password',
-                  icon: Icon(Icons.lock),
+                  icon: const Icon(Icons.lock),
                 ),
                 const SizedBox(
                   height: 3,
@@ -146,21 +155,32 @@ class _LoginContainer extends State<LoginContainer> {
                 const SizedBox(
                   height: 5,
                 ),
+                const SizedBox(
+                  height: 3,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RegisterPage(),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        'Create account here',
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
-        ),
-        const SizedBox(
-          height: 3,
-        ),
-        const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Create account here',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-            ),
-          ],
         ),
       ],
     );
