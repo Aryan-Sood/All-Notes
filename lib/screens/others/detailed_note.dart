@@ -1,16 +1,19 @@
 import 'package:all_notes/widgets/note_appbar.dart';
+import 'package:all_notes/widgets/note_title_field.dart';
 import 'package:flutter/material.dart';
 
 class DetailedNote extends StatefulWidget {
   String title;
   String content;
   String time;
+  bool creating;
 
   DetailedNote(
       {super.key,
       required this.title,
       required this.content,
-      required this.time});
+      required this.time,
+      required this.creating});
 
   @override
   State<DetailedNote> createState() => _DetailedNoteState();
@@ -32,18 +35,28 @@ class _DetailedNoteState extends State<DetailedNote> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    widget.title,
-                    style: const TextStyle(
-                        fontSize: 28, fontWeight: FontWeight.bold),
+                  NoteTitleField(
+                    maxLines: null,
+                    title: widget.creating ? 'Enter title' : widget.title,
+                    decoration: const InputDecoration(
+                      hintText: 'Enter title',
+                      border: InputBorder.none,
+                    ),
+                    textStyle:
+                        const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(
                     height: 40,
                   ),
-                  Text(
-                    widget.content,
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.w600),
+                  NoteTitleField(
+                    maxLines: null,
+                    title: widget.creating ? 'Start writing' : widget.title,
+                    decoration: const InputDecoration(
+                      hintText: 'Start writing',
+                      border: InputBorder.none,
+                    ),
+                    textStyle:
+                        const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                   ),
                 ],
               ),

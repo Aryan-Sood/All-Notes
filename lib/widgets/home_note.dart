@@ -30,6 +30,7 @@ class _HomeNote extends State<HomeNote> {
               title: widget.title,
               content: widget.content,
               time: widget.time,
+              creating: false,
             ),
           ),
         );

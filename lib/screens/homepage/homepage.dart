@@ -4,6 +4,7 @@ import 'package:all_notes/Utils/serial_deserial_notes.dart';
 import 'package:all_notes/Utils/change_login_state.dart';
 import 'package:all_notes/models/note_structure.dart';
 import 'package:all_notes/screens/auth/login.dart';
+import 'package:all_notes/screens/others/detailed_note.dart';
 import 'package:all_notes/widgets/add_note_sheet.dart';
 import 'package:all_notes/widgets/home_note.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -379,7 +380,14 @@ class _HomePageState extends State<HomePage> {
                         foregroundColor: Colors.black,
                         shadowColor: Colors.blue),
                     onPressed: () {
-                      addNoteSheet(context, addNewNote);
+                      // addNoteSheet(context, addNewNote);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailedNote(
+                              title: '', content: '', time: '', creating: true),
+                        ),
+                      );
                     },
                     child: const Text(
                       "+",
