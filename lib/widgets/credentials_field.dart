@@ -12,7 +12,6 @@ class CredentialsField extends StatefulWidget {
 }
 
 class _CredentialsField extends State<CredentialsField> {
-  final emailController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -23,7 +22,7 @@ class _CredentialsField extends State<CredentialsField> {
           Expanded(
             child: TextField(
               autocorrect: false,
-              controller: emailController,
+              controller: widget.controller,
               decoration: InputDecoration(
                 fillColor: Colors.transparent,
                 alignLabelWithHint: true,

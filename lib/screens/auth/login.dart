@@ -1,4 +1,7 @@
+import 'package:all_notes/Utils/change_login_state.dart';
+import 'package:all_notes/functions/Firebase%20Functions/email_login.dart';
 import 'package:all_notes/screens/auth/register_page.dart';
+import 'package:all_notes/screens/homepage/homepage.dart';
 import 'package:all_notes/widgets/credentials_field.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -70,6 +73,7 @@ class LoginContainer extends StatefulWidget {
 class _LoginContainer extends State<LoginContainer> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  bool loginSuccess = false;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -140,7 +144,19 @@ class _LoginContainer extends State<LoginContainer> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: () async {
+                          loginSuccess = await signInWithEmail(
+                              emailController.text, passwordController.text);
+                          if (loginSuccess) {
+                            changeLoginState(true);
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HomePage(),
+                              ),
+                            );
+                          }
+                        },
                         child: const Text(
                           'LOGIN',
                           style: TextStyle(
