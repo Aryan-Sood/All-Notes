@@ -73,7 +73,7 @@ class LoginContainer extends StatefulWidget {
 class _LoginContainer extends State<LoginContainer> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  bool loginSuccess = false;
+  int loginSuccess = -1;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -147,14 +147,31 @@ class _LoginContainer extends State<LoginContainer> {
                         onPressed: () async {
                           loginSuccess = await signInWithEmail(
                               emailController.text, passwordController.text);
-                          if (loginSuccess) {
-                            changeLoginState(true);
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => HomePage(),
-                              ),
-                            );
+                          switch (loginSuccess) {
+                            case 0:
+                              changeLoginState(true);
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HomePage(),
+                                ),
+                              );
+                              break;
+                            case 1:
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content:
+                                      Text('Please check your credentials'),
+                                ),
+                              );
+                              break;
+                            default:
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content:
+                                      Text('Please check your credentials'),
+                                ),
+                              );
                           }
                         },
                         child: const Text(

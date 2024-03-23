@@ -128,6 +128,7 @@ class _HomePageState extends State<HomePage> {
                     id: value['id'],
                     color: stringToColor(value['color']),
                     title: value['title'],
+                    content: value['content'],
                     created: DateTime.parse(
                       value['created'],
                     ),
@@ -139,6 +140,7 @@ class _HomePageState extends State<HomePage> {
                       value['id'],
                       stringToColor(value['color']),
                       value['title'],
+                      value['content'],
                       DateTime.parse(
                         value['created'],
                       ),
@@ -164,6 +166,7 @@ class _HomePageState extends State<HomePage> {
           id: newNote.id,
           color: newNote.color,
           title: newNote.title,
+          content: newNote.content,
           created: DateTime.now(),
         ),
       );
@@ -355,7 +358,9 @@ class _HomePageState extends State<HomePage> {
                       return GridTile(
                         child: HomeNote(
                           title: notes[index].title,
+                          content: notes[index].content,
                           color: notes[index].color,
+                          time: notes[index].created.toString(),
                         ),
                       );
                     },

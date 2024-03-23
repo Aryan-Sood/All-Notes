@@ -17,6 +17,7 @@ void pushNewNote(NoteStructure newNote) async {
       'id': notesRef.key,
       'color': colorToHex(newNote.color),
       'title': newNote.title,
+      'content': newNote.content,
       'created': DateTime.now().toString(),
     });
   } catch (error) {
